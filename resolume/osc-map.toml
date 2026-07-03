@@ -1,0 +1,49 @@
+listen_port = 5000
+spout_name = "3DS2SPOUT"
+osc_host = "127.0.0.1"
+osc_port = 7000
+
+[[mappings]]
+param_id = 0x10
+osc_address = "/composition/layers/1/video/effects/1/opacity"
+osc_type = "float"
+
+[[mappings]]
+param_id = 0x11
+osc_address = "/composition/layers/1/video/opacity"
+osc_type = "float"
+
+[[mappings]]
+param_id = 0x20
+osc_address = "/composition/layers/1/video/effects/1/enabled"
+osc_type = "int"
+
+[[mappings]]
+param_id = 0x21
+osc_address = "/composition/layers/1/video/effects/2/enabled"
+osc_type = "int"
+
+[[mappings]]
+param_id = 0x22
+osc_address = "/composition/layers/1/video/effects/3/enabled"
+osc_type = "int"
+
+[[mappings]]
+param_id = 0x23
+osc_address = "/composition/layers/1/video/effects/4/enabled"
+osc_type = "int"
+
+[[mappings]]
+param_id = 0x24
+osc_address = "/composition/layers/1/video/effects/5/enabled"
+osc_type = "int"
+
+[[mappings]]
+param_id = 0x25
+osc_address = "/composition/layers/1/video/effects/6/enabled"
+osc_type = "int"
+
+[[mappings]]
+param_id = 0x30
+osc_address = "/composition/layers/1/video/blendmode"
+osc_type = "int"

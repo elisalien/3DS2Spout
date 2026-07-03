@@ -1,0 +1,20 @@
+[package]
+name = "pc-bridge"
+version = "0.1.0"
+edition = "2021"
+description = "3DS camera UDP receiver with Spout output and OSC relay for Resolume"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+qoi = "0.4"
+rosc = "0.10"
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+libloading = "0.8"
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = ["Win32_Foundation", "Win32_System_LibraryLoader"] }
+
+[profile.release]
+lto = true
+codegen-units = 1

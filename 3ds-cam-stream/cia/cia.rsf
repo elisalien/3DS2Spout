@@ -1,0 +1,13 @@
+BasicInfo:
+  Title                  : "3DS2SPOUT"
+  ProductCode            : "CTR-P-CAMS"
+  LogoRegion             : None
+  ContentType            : Application
+  UniqueId               : 0x00330, 0x040000
+TitleInfo:
+  Category               : Application
+  MaxSize                : 0x00200000
+Option:
+  UseOnSD                : true
+  FreeProductCode        : true
+  EnableCrypt            : false

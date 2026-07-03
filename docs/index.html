@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="3DS2SPOUT — Stream your Nintendo 3DS camera to Resolume Arena via Spout.">
+  <meta name="github-repo" content="">
+  <title>3DS2SPOUT</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%231a2830' width='32' height='32' rx='6'/><text x='16' y='22' text-anchor='middle' font-size='14' font-family='system-ui' font-weight='700' fill='%236aacb6'>3S</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #141f26;
+      --bg2: #1a2830;
+      --card: #22343e;
+      --card-hover: #2a404c;
+      --accent: #4a8a94;
+      --accent-light: #6aacb6;
+      --text: #e8eef0;
+      --muted: #8baab4;
+      --border: rgba(74, 138, 148, 0.25);
+      --glow: rgba(74, 138, 148, 0.15);
+      --radius: 14px;
+      --font: "DM Sans", system-ui, -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow {
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 500px;
+      background: radial-gradient(ellipse, var(--glow), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* Nav */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent-light); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lang-toggle {
+      display: flex;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .lang-btn {
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .nav-link {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      background: var(--card);
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 32px 0 56px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      background: rgba(74, 138, 148, 0.12);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent-light);
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(74, 138, 148, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-light);
+      box-shadow: 0 6px 32px rgba(74, 138, 148, 0.45);
+    }
+
+    .btn-ghost {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { background: var(--card-hover); }
+
+    /* Flow diagram */
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 48px 0;
+      padding: 20px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .flow-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--card);
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .flow-item strong { color: var(--text); }
+
+    .flow-arrow {
+      color: var(--accent);
+      font-size: 1rem;
+    }
+
+    /* Sections */
+    section { margin-bottom: 56px; }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    /* Steps */
+    .steps {
+      display: grid;
+      gap: 16px;
+      counter-reset: step;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 16px;
+      align-items: start;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .step:hover {
+      border-color: rgba(74, 138, 148, 0.5);
+      background: var(--card-hover);
+    }
+
+    .step-num {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(74, 138, 148, 0.15);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent-light);
+      flex-shrink: 0;
+    }
+
+    .step h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .step p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    code, .code-block {
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      font-size: 0.82rem;
+    }
+
+    code {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 5px;
+      color: var(--accent-light);
+    }
+
+    .code-block {
+      display: block;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* Prerequisites grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+
+    .card-tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .tag-required { background: rgba(74, 138, 148, 0.2); color: var(--accent-light); }
+    .tag-3ds { background: rgba(139, 170, 180, 0.15); color: var(--muted); }
+    .tag-optional { background: rgba(139, 170, 180, 0.1); color: var(--muted); }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .card a {
+      color: var(--accent-light);
+      text-decoration: none;
+    }
+
+    .card a:hover { text-decoration: underline; }
+
+    /* Links row */
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .link-chip {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .link-chip:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--accent-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* i18n visibility */
+    [data-lang] { display: none; }
+    html[lang="fr"] [data-lang="fr"],
+    html[lang="en"] [data-lang="en"] { display: revert; }
+
+    [data-lang="fr"].block,
+    [data-lang="en"].block { display: none; }
+    html[lang="fr"] [data-lang="fr"].block,
+    html[lang="en"] [data-lang="en"].block { display: block; }
+
+    html[lang="fr"] [data-lang="fr"].inline,
+    html[lang="en"] [data-lang="en"].inline { display: inline; }
+
+    html[lang="fr"] [data-lang="fr"].flex,
+    html[lang="en"] [data-lang="en"].flex { display: flex; }
+
+    html[lang="fr"] [data-lang="fr"].grid,
+    html[lang="en"] [data-lang="en"].grid { display: grid; }
+
+    html[lang="fr"] [data-lang="fr"].nav-link,
+    html[lang="en"] [data-lang="en"].nav-link { display: inline-block; }
+
+    @media (max-width: 600px) {
+      .flow-arrow { display: none; }
+      .step { grid-template-columns: 1fr; }
+      .step-num { width: 36px; height: 36px; font-size: 0.95rem; }
+      nav .nav-link { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#">3DS<span>2</span>SPOUT</a>
+      <div class="nav-right">
+        <a class="nav-link" href="#quickstart" data-lang="fr">Démarrage</a>
+        <a class="nav-link" href="#quickstart" data-lang="en">Quick start</a>
+        <a class="nav-link" href="#prerequisites" data-lang="fr">Prérequis</a>
+        <a class="nav-link" href="#prerequisites" data-lang="en">Prerequisites</a>
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button class="lang-btn active" data-set-lang="fr" aria-pressed="true">FR</button>
+          <button class="lang-btn" data-set-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="badge" data-lang="fr">Homebrew 3DS &rarr; Resolume</div>
+      <div class="badge" data-lang="en">3DS Homebrew &rarr; Resolume</div>
+
+      <h1>
+        <span data-lang="fr">Caméra 3DS en <em>direct</em> dans Resolume</span>
+        <span data-lang="en">Live <em>3DS camera</em> into Resolume</span>
+      </h1>
+
+      <p data-lang="fr">
+        Streame la caméra Nintendo 3DS via WiFi vers un bridge PC Windows,
+        sortie Spout dans Resolume Arena, effets tactiles et relais OSC.
+      </p>
+      <p data-lang="en">
+        Stream your Nintendo 3DS camera over WiFi to a Windows PC bridge,
+        Spout output into Resolume Arena, touch effects and OSC relay.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#quickstart" data-lang="fr">Démarrer en 5 min</a>
+        <a class="btn btn-primary" href="#quickstart" data-lang="en">Get started in 5 min</a>
+        <a class="btn btn-ghost" id="link-pdf" href="#" target="_blank" rel="noopener">
+          <span data-lang="fr">Guide PDF</span>
+          <span data-lang="en">PDF guide</span>
+        </a>
+        <a class="btn btn-ghost" id="link-repo" href="#" target="_blank" rel="noopener">
+          <span data-lang="fr">Code source</span>
+          <span data-lang="en">Source code</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="flow flex" data-lang="fr">
+      <div class="flow-item"><strong>3DS</strong> camera</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-item">UDP / QOI</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-item"><strong>PC</strong> bridge</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-item"><strong>Spout</strong></div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-item"><strong>Resolume</strong></div>
+    </div>
+    <div class="flow flex" data-lang="en">
+      <div class="flow-item"><strong>3DS</strong> camera</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-item">UDP / QOI</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-item"><strong>PC</strong> bridge</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-item"><strong>Spout</strong></div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-item"><strong>Resolume</strong></div>
+    </div>
+
+    <section id="quickstart">
+      <div class="section-label" data-lang="fr">Guide rapide</div>
+      <div class="section-label" data-lang="en">Quick start</div>
+
+      <h2 data-lang="fr">Installation en 7 étapes</h2>
+      <h2 data-lang="en">Setup in 7 steps</h2>
+
+      <p data-lang="fr" style="color:var(--muted);margin:-12px 0 20px;font-size:0.92rem;">
+        Une seule IP à configurer : celle du PC (bouton <strong>IP PC</strong> sur la 3DS).
+      </p>
+      <p data-lang="en" style="color:var(--muted);margin:-12px 0 20px;font-size:0.92rem;">
+        Only one IP to set: the PC IP (via <strong>IP PC</strong> button on the 3DS).
+      </p>
+
+      <div class="steps">
+        <article class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h3 data-lang="fr">Prérequis PC</h3>
+            <h3 data-lang="en">PC prerequisites</h3>
+            <p data-lang="fr">Python 3.10+, SpoutLibrary.dll (x64), Resolume, même WiFi que la 3DS.</p>
+            <p data-lang="en">Python 3.10+, SpoutLibrary.dll (x64), Resolume, same WiFi as the 3DS.</p>
+            <span class="code-block">install\check-prerequisites.cmd</span>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h3 data-lang="fr">Installer le bridge PC</h3>
+            <h3 data-lang="en">Install PC bridge</h3>
+            <p data-lang="fr">Dépendances Python + copie SpoutLibrary.dll dans <code>pc-bridge/vendor/</code>.</p>
+            <p data-lang="en">Python dependencies + copy SpoutLibrary.dll to <code>pc-bridge/vendor/</code>.</p>
+            <span class="code-block">install\INSTALL.cmd</span>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h3 data-lang="fr">Installer le .3dsx (une fois)</h3>
+            <h3 data-lang="en">Install .3dsx (once)</h3>
+            <p data-lang="fr">
+              Release : copie <code>3ds-cam-stream.3dsx</code> &rarr; <code>SD:/3ds/</code><br>
+              Dev : <code>make</code> puis depuis <code>apps/</code> : <code>./scripts/install-to-3ds.sh IP_3DS</code>
+            </p>
+            <p data-lang="en">
+              Release: copy <code>3ds-cam-stream.3dsx</code> &rarr; <code>SD:/3ds/</code><br>
+              Dev: <code>make</code> then from <code>apps/</code>: <code>./scripts/install-to-3ds.sh 3DS_IP</code>
+            </p>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-num">4</div>
+          <div>
+            <h3 data-lang="fr">Lancer le bridge + noter l'IP</h3>
+            <h3 data-lang="en">Start bridge + note IP</h3>
+            <p data-lang="fr">La console affiche <strong>IP PC pour la 3DS : 192.168.x.x</strong></p>
+            <p data-lang="en">Console shows <strong>IP PC pour la 3DS : 192.168.x.x</strong></p>
+            <span class="code-block">install\run-bridge.cmd</span>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-num">5</div>
+          <div>
+            <h3 data-lang="fr">Configurer l'IP sur la 3DS</h3>
+            <h3 data-lang="en">Set IP on the 3DS</h3>
+            <p data-lang="fr">
+              3DS2SPOUT &rarr; bouton <strong>IP PC</strong> &rarr; clavier tactile &rarr; <strong>OK</strong><br>
+              (sauvegarde auto sur la SD — pas d'édition PC)
+            </p>
+            <p data-lang="en">
+              3DS2SPOUT &rarr; <strong>IP PC</strong> button &rarr; touch keypad &rarr; <strong>OK</strong><br>
+              (auto-saved to SD — no PC file editing)
+            </p>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-num">6</div>
+          <div>
+            <h3 data-lang="fr">Resolume Arena</h3>
+            <h3 data-lang="en">Resolume Arena</h3>
+            <p data-lang="fr">Sources &rarr; Spout &rarr; <strong>3DS2SPOUT</strong> sur Layer 1.</p>
+            <p data-lang="en">Sources &rarr; Spout &rarr; <strong>3DS2SPOUT</strong> on Layer 1.</p>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-num">7</div>
+          <div>
+            <h3 data-lang="fr">Stream !</h3>
+            <h3 data-lang="en">Stream!</h3>
+            <p data-lang="fr">Appuie sur <strong>REC</strong> — vérifie <strong>PC OK</strong> + FPS en bas d'écran.</p>
+            <p data-lang="en">Press <strong>REC</strong> — check <strong>PC OK</strong> + FPS at the bottom.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="home-menu">
+      <div class="section-label" data-lang="fr">Optionnel</div>
+      <div class="section-label" data-lang="en">Optional</div>
+
+      <h2 data-lang="fr">Icône sur le menu HOME</h2>
+      <h2 data-lang="en">Icon on the HOME menu</h2>
+
+      <div class="steps">
+        <article class="step">
+          <div class="step-num">+</div>
+          <div>
+            <p data-lang="fr">
+              Le <code>.3dsx</code> se lance depuis le <strong>Homebrew Launcher</strong>.
+              Pour une icône sur l'écran d'accueil Nintendo : installe un
+              <strong>forwarder CIA</strong> avec <strong>FBI</strong>.
+            </p>
+            <p data-lang="en">
+              The <code>.3dsx</code> runs from <strong>Homebrew Launcher</strong>.
+              For a Nintendo HOME screen icon: install a <strong>forwarder CIA</strong> with <strong>FBI</strong>.
+            </p>
+            <div class="links" style="margin-top:10px">
+              <a class="link-chip" id="link-forwarder" href="#">FORWARDER-FBI.md</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="prerequisites">
+      <div class="section-label" data-lang="fr">Avant de commencer</div>
+      <div class="section-label" data-lang="en">Before you start</div>
+
+      <h2 data-lang="fr">Prérequis</h2>
+      <h2 data-lang="en">Prerequisites</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
+          <span class="card-tag tag-required" data-lang="en">Required</span>
+          <h3>Windows PC</h3>
+          <p data-lang="fr">Windows 10/11, même réseau WiFi que la 3DS.</p>
+          <p data-lang="en">Windows 10/11, same WiFi network as the 3DS.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
+          <span class="card-tag tag-required" data-lang="en">Required</span>
+          <h3>Python 3.10+</h3>
+          <p><a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org</a></p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
+          <span class="card-tag tag-required" data-lang="en">Required</span>
+          <h3>SpoutLibrary.dll</h3>
+          <p data-lang="fr">DLL x64 dans pc-bridge/vendor/</p>
+          <p data-lang="en">x64 DLL in pc-bridge/vendor/</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
+          <span class="card-tag tag-required" data-lang="en">Required</span>
+          <h3>Resolume Arena</h3>
+          <p data-lang="fr">Entrée source Spout.</p>
+          <p data-lang="en">Spout source input.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-3ds">3DS</span>
+          <h3>Nintendo 3DS</h3>
+          <p data-lang="fr">Luma3DS + Homebrew Launcher + FTPD.</p>
+          <p data-lang="en">Luma3DS + Homebrew Launcher + FTPD.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
+          <span class="card-tag tag-required" data-lang="en">Required</span>
+          <h3>Pare-feu UDP 5000</h3>
+          <p data-lang="fr">Autoriser à la première exécution du bridge.</p>
+          <p data-lang="en">Allow on first bridge run.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-3ds">3DS</span>
+          <h3>Config IP tactile</h3>
+          <p data-lang="fr">Bouton <strong>IP PC</strong> — pas de .cfg manuel sur PC.</p>
+          <p data-lang="en"><strong>IP PC</strong> button — no manual .cfg on PC.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-optional" data-lang="fr">Optionnel</span>
+          <span class="card-tag tag-optional" data-lang="en">Optional</span>
+          <h3>Rust / cargo</h3>
+          <p data-lang="fr">Bridge PC plus rapide ; Python suffit.</p>
+          <p data-lang="en">Faster PC bridge; Python is enough.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-optional" data-lang="fr">Dev</span>
+          <span class="card-tag tag-optional" data-lang="en">Dev</span>
+          <h3>devkitPro + MSYS2</h3>
+          <p data-lang="fr">Compiler le .3dsx — <code>smdhtool</code>, pas bannertool.</p>
+          <p data-lang="en">Build .3dsx — <code>smdhtool</code>, not bannertool.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="docs">
+      <div class="section-label" data-lang="fr">Documentation</div>
+      <div class="section-label" data-lang="en">Documentation</div>
+
+      <h2 data-lang="fr">Aller plus loin</h2>
+      <h2 data-lang="en">Learn more</h2>
+
+      <div class="links">
+        <a class="link-chip" id="link-install-readme" href="#">install/README.md</a>
+        <a class="link-chip" id="link-forwarder-docs" href="#">FORWARDER-FBI.md</a>
+        <a class="link-chip" id="link-architecture" href="ARCHITECTURE.md">ARCHITECTURE.md</a>
+        <a class="link-chip" id="link-resolume" href="#">resolume/SETUP.md</a>
+        <a class="link-chip" id="link-readme" href="#">README.md</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>3DS2SPOUT &mdash; MIT License</span>
+      <span>
+        <a id="link-github-footer" href="#" target="_blank" rel="noopener">GitHub</a>
+      </span>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "3ds2spout-lang";
+      const metaRepo = document.querySelector('meta[name="github-repo"]')?.content?.trim();
+
+      // Detect GitHub Pages repo URL from origin or meta tag
+      function getRepoBase() {
+        if (metaRepo) {
+          return "https://github.com/" + metaRepo;
+        }
+        const host = location.hostname;
+        if (host.endsWith(".github.io")) {
+          const parts = location.pathname.split("/").filter(Boolean);
+          if (parts.length >= 1) {
+            const user = host.replace(".github.io", "");
+            return "https://github.com/" + user + "/" + parts[0];
+          }
+        }
+        return null;
+      }
+
+      const repoBase = getRepoBase();
+      const branch = "main";
+
+      function repoUrl(path) {
+        if (!repoBase) return path;
+        return repoBase + "/blob/" + branch + "/" + path.replace(/^\//, "");
+      }
+
+      function rawUrl(path) {
+        if (!repoBase) return path;
+        return repoBase + "/raw/" + branch + "/" + path.replace(/^\//, "");
+      }
+
+      // Wire links
+      const pdf = document.getElementById("link-pdf");
+      const repo = document.getElementById("link-repo");
+      const ghFooter = document.getElementById("link-github-footer");
+
+      pdf.href = rawUrl("install/guide/GUIDE-DEBUTANT.pdf");
+      if (repoBase) {
+        repo.href = repoBase;
+        ghFooter.href = repoBase;
+      }
+
+      document.getElementById("link-forwarder").href = repoUrl("docs/FORWARDER-FBI.md");
+      document.getElementById("link-forwarder-docs").href = repoUrl("docs/FORWARDER-FBI.md");
+      document.getElementById("link-install-readme").href = repoUrl("install/README.md");
+      document.getElementById("link-architecture").href = repoUrl("docs/ARCHITECTURE.md");
+      document.getElementById("link-resolume").href = repoUrl("resolume/SETUP.md");
+      document.getElementById("link-readme").href = repoUrl("README.md");
+
+      // Language
+      function setLang(lang) {
+        document.documentElement.lang = lang;
+        document.querySelectorAll("[data-set-lang]").forEach(function (btn) {
+          const active = btn.dataset.setLang === lang;
+          btn.classList.toggle("active", active);
+          btn.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        try { localStorage.setItem(STORAGE_KEY, lang); } catch (_) {}
+      }
+
+      const saved = (function () {
+        try { return localStorage.getItem(STORAGE_KEY); } catch (_) { return null; }
+      })();
+
+      const browserLang = navigator.language?.startsWith("fr") ? "fr" : "en";
+      setLang(saved === "fr" || saved === "en" ? saved : browserLang);
+
+      document.querySelectorAll("[data-set-lang]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          setLang(btn.dataset.setLang);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+target/
+**/*.rs.bk
+pc-bridge/vendor/*.dll
+!pc-bridge/vendor/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+
+# Local machine config (real IPs)
+scripts/install-my-3ds.ps1
+scripts/install-my-3ds.sh
+
+# 3DS build
+3ds-cam-stream/build/
+3ds-cam-stream/*.3dsx
+3ds-cam-stream/*.elf
+3ds-cam-stream/*.smdh
+3ds-cam-stream/*.bnr
+3ds-cam-stream/*.cia
+3ds-cam-stream/release/3DS2SPOUT-*/
+3ds-cam-stream/release/*.zip
+!3ds-cam-stream/gfx/icon.png
+!3ds-cam-stream/release/README.txt
+
+.netlify
