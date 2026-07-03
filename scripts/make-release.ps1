@@ -88,7 +88,7 @@ function Invoke-StageRelease {
     Copy-Item (Join-Path $AppDir "example.cfg") (Join-Path $RelDir "3ds-cam-stream.cfg.example") -Force
     Copy-Item (Join-Path $AppDir "release\README.txt") (Join-Path $RelDir "README.txt") -Force
 
-    foreach ($file in @("README.md", "README.en.md", "LICENSE", "run-bridge.cmd")) {
+    foreach ($file in @("README.md", "README.en.md", "LICENSE", "run-bridge.cmd", "install-buildtools.bat")) {
         Copy-Item (Join-Path $Root $file) (Join-Path $RelDir $file) -Force
     }
 

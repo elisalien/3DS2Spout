@@ -21,9 +21,6 @@ pub struct SpoutSender {
     obj: *mut std::ffi::c_void,
     set_name: SetSenderNameFn,
     send_image: SendImageFn,
-    rgba_buf: Vec<u8>,
-    width: u32,
-    height: u32,
 }
 
 unsafe impl Send for SpoutSender {}
@@ -39,7 +36,7 @@ impl SpoutSender {
 
         let lib = dll_paths
             .iter()
-            .find_map(|p| load_spout_dll(p).ok())?;
+            .find_map(|p| load_spout_dll(p))?;
 
         unsafe {
             let get_spout: libloading::Symbol<GetSpoutFn> =
@@ -53,14 +50,11 @@ impl SpoutSender {
             let set_name: SetSenderNameFn = std::mem::transmute(*vtable.add(0));
             let send_image: SendImageFn = std::mem::transmute(*vtable.add(5));
 
-            let mut sender = Self {
+            let sender = Self {
                 _lib: lib,
                 obj,
                 set_name,
                 send_image,
-                rgba_buf: Vec::new(),
-                width: 0,
-                height: 0,
             };
 
             let cname = CString::new(name).ok()?;
@@ -70,18 +64,20 @@ impl SpoutSender {
     }
 
     pub fn send_rgba(&mut self, rgba: &[u8], width: u32, height: u32) -> bool {
-        let needed = (width * height * 4) as usize;
-        if self.rgba_buf.len() != needed {
-            self.rgba_buf.resize(needed, 0);
+        // Refuse a short buffer: passing it to native code would read past
+        // the end of the slice. The QOI decoder always yields exactly w*h*4,
+        // so this only triggers on a programming error.
+        let needed = width as usize * height as usize * 4;
+        if rgba.len() < needed {
+            return false;
         }
-        self.rgba_buf[..needed.min(rgba.len())].copy_from_slice(&rgba[..needed.min(rgba.len())]);
-        self.width = width;
-        self.height = height;
 
+        // No intermediate copy: Spout reads the pixels synchronously during
+        // SendImage, so handing it the decode buffer directly is safe.
         unsafe {
             (self.send_image)(
                 self.obj,
-                self.rgba_buf.as_ptr(),
+                rgba.as_ptr(),
                 width,
                 height,
                 GL_RGBA,
@@ -90,17 +86,17 @@ impl SpoutSender {
         }
     }
 
+    #[allow(dead_code)]
     pub fn is_available() -> bool {
         Self::try_new("3DS2SPOUT-probe").is_some()
     }
 }
 
-fn load_spout_dll(path: &str) -> Result<libloading::Library, libloading::Error> {
-    if Path::new(path).exists() {
-        unsafe { libloading::Library::new(path) }
-    } else {
-        unsafe { libloading::Library::new(path) }
+fn load_spout_dll(path: &str) -> Option<libloading::Library> {
+    if !Path::new(path).exists() {
+        return None;
     }
+    unsafe { libloading::Library::new(path).ok() }
 }
 
 impl Drop for SpoutSender {

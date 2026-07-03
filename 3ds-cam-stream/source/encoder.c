@@ -5,14 +5,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Expansion 5/6 bits -> 8 bits par table avec replication des bits de poids
+ * fort ((i<<3)|(i>>2)) : 0x1F donne 255 et non 248, donc les blancs sont
+ * vraiment blancs cote Spout, sans cout supplementaire par pixel. Tables
+ * remplies au premier appel (appele uniquement depuis le thread reseau). */
 void rgb565_to_rgb888(u8* dst, const u16* src, u32 count)
 {
+    static u8 lut5[32];
+    static u8 lut6[64];
+    static bool lut_ready = false;
     u32 i;
+
+    if (!lut_ready) {
+        for (i = 0; i < 32; i++) lut5[i] = (u8)((i << 3) | (i >> 2));
+        for (i = 0; i < 64; i++) lut6[i] = (u8)((i << 2) | (i >> 4));
+        lut_ready = true;
+    }
+
     for (i = 0; i < count; i++) {
         u16 px = src[i];
-        dst[i * 3 + 0] = (u8)(((px >> 11) & 0x1F) << 3);
-        dst[i * 3 + 1] = (u8)(((px >> 5) & 0x3F) << 2);
-        dst[i * 3 + 2] = (u8)((px & 0x1F) << 3);
+        dst[0] = lut5[px >> 11];
+        dst[1] = lut6[(px >> 5) & 0x3F];
+        dst[2] = lut5[px & 0x1F];
+        dst += 3;
     }
 }
 

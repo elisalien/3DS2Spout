@@ -63,6 +63,13 @@ int main(int argc, char** argv)
     Thread cam_th = camera_start_thread(&g_cam, &g_state);
     Thread net_th = network_start_thread(&g_net, &g_state, &g_cam, &g_enc);
 
+    /* Preview : on ne redessine que lorsqu'une NOUVELLE frame camera arrive,
+     * et deux fois (une par framebuffer, ecran du haut double-bufferise) pour
+     * que les deux buffers restent identiques. Redessiner a chaque VBlank
+     * copiait 96 000 pixels pour rien et volait du CPU a l'encodage QOI. */
+    u32 last_preview_id = 0;
+    int preview_draws_pending = 0;
+
     while (aptMainLoop()) {
         touch_ui_update(&g_ui, &g_state, &g_net);
 
@@ -76,10 +83,15 @@ int main(int argc, char** argv)
             LightLock_Lock(&g_cam.lock);
             if (g_cam.ready) {
                 preview = g_cam.buffer;
+                if (g_cam.frame_id != last_preview_id) {
+                    last_preview_id = g_cam.frame_id;
+                    preview_draws_pending = 2;
+                }
             }
             LightLock_Unlock(&g_cam.lock);
-            if (preview) {
+            if (preview && preview_draws_pending > 0) {
                 camera_draw_preview(preview, STREAM_WIDTH, STREAM_HEIGHT);
+                preview_draws_pending--;
             }
         }
 

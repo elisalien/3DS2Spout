@@ -30,19 +30,26 @@ static u32 cam_port_primary(CameraMode mode)
     return PORT_CAM1;
 }
 
+/* Framebuffer GSP_BGR8_OES : column-major (offset = (x*height + y)*3),
+ * origine en bas de l'ecran. On parcourt donc x en externe et les lignes
+ * image en descendant : le pointeur destination avance sequentiellement,
+ * ce qui remplace 96 000 multiplications par des increments et rend les
+ * ecritures lineaires (cache/bus beaucoup plus efficaces que l'acces
+ * disperse de l'ancienne version ligne par ligne). */
 static void write_rgb565_to_top_fb(void* fb, const u16* img, u16 width, u16 height)
 {
-    u8* fb8 = (u8*)fb;
-    u16 y, x;
-    for (y = 0; y < height; y++) {
-        for (x = 0; x < width; x++) {
-            u16 data = img[y * width + x];
-            u32 draw_y = height - 1 - y;
-            u32 v = (draw_y + x * height) * 3;
-            /* framebuffer GSP_BGR8_OES : ordre memoire B,G,R */
-            fb8[v]     = (u8)((data & 0x1F) << 3);
-            fb8[v + 1] = (u8)(((data >> 5) & 0x3F) << 2);
-            fb8[v + 2] = (u8)(((data >> 11) & 0x1F) << 3);
+    u8* dst = (u8*)fb;
+    u16 x, y;
+    for (x = 0; x < width; x++) {
+        const u16* col = img + (u32)(height - 1) * width + x;
+        for (y = 0; y < height; y++) {
+            u16 data = *col;
+            col -= width;
+            /* ordre memoire B,G,R */
+            dst[0] = (u8)((data & 0x1F) << 3);
+            dst[1] = (u8)(((data >> 5) & 0x3F) << 2);
+            dst[2] = (u8)(((data >> 11) & 0x1F) << 3);
+            dst += 3;
         }
     }
 }

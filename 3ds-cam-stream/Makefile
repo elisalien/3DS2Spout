@@ -28,7 +28,7 @@ GFX		:=	gfx
 
 APP_TITLE	:=	3DS2SPOUT
 APP_DESCRIPTION := Camera stream to Spout/Resolume
-APP_AUTHOR	:=	CREA
+APP_AUTHOR	:=	Elisalien
 
 # Icon + metadata for Homebrew Launcher (and CIA)
 NO_SMDH		:=
@@ -149,7 +149,7 @@ release: icon smdh
 	@cp $(TARGET).3dsx $(RELEASE_DIR)/
 	@cp $(TOPDIR)/example.cfg $(RELEASE_DIR)/3ds-cam-stream.cfg.example
 	@cp $(TOPDIR)/release/README.txt $(RELEASE_DIR)/README.txt
-	@cp $(REPO_ROOT)/README.md $(REPO_ROOT)/README.en.md $(REPO_ROOT)/LICENSE $(REPO_ROOT)/run-bridge.cmd $(RELEASE_DIR)/
+	@cp $(REPO_ROOT)/README.md $(REPO_ROOT)/README.en.md $(REPO_ROOT)/LICENSE $(REPO_ROOT)/run-bridge.cmd $(REPO_ROOT)/install-buildtools.bat $(RELEASE_DIR)/
 	@cp -r $(REPO_ROOT)/install $(REPO_ROOT)/docs $(REPO_ROOT)/resolume $(RELEASE_DIR)/
 	@mkdir -p $(RELEASE_DIR)/pc-bridge
 	@cp -r $(REPO_ROOT)/pc-bridge/src $(REPO_ROOT)/pc-bridge/vendor $(RELEASE_DIR)/pc-bridge/
