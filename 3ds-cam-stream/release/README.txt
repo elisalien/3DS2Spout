@@ -12,16 +12,15 @@ PREREQUIS
 INSTALLATION (ordre exact)
 --------------------------
 
-1. PC : install\INSTALL.cmd
-2. PC : copier SpoutLibrary.dll -> pc-bridge\vendor\
-3. 3DS : copier 3ds-cam-stream.3dsx -> SD:/3ds/     (une seule fois)
-4. PC : install\run-bridge.cmd
+1. PC : install\INSTALL.cmd   (Python + SpoutLibrary.dll automatiques)
+2. 3DS : copier 3ds-cam-stream.3dsx -> SD:/3ds/     (une seule fois)
+3. PC : install\run-bridge.cmd
         -> noter l'IP affichee :
            "IP PC pour la 3DS : 192.168.x.x"
-5. 3DS : Homebrew Launcher -> 3DS2SPOUT
+4. 3DS : Homebrew Launcher -> 3DS2SPOUT
         -> bouton IP PC -> saisir l'IP -> OK
-6. PC : Resolume -> source Spout 3DS2SPOUT
-7. 3DS : REC (verifier PC OK + FPS)
+5. PC : Resolume -> source Spout 3DS2SPOUT
+6. 3DS : REC (verifier PC OK + FPS)
 
 CONFIG IP
 ---------

@@ -2,20 +2,21 @@
 
 [Français](README.md) · **English**
 
-**The Nintendo 3DS camera, live in Resolume Arena — wirelessly.**
+**The Nintendo 3DS camera as a Spout source — wirelessly.**
 
-3DS2SPOUT turns a 3DS into a WiFi camera for VJing: the image is streamed to a
-Windows PC, which publishes it as a **Spout** source ready to use in **Resolume
-Arena**. The console's touch screen acts as a remote: camera switching, quality,
-and effects relayed over **OSC**. FR/EN interface.
+3DS2SPOUT turns a 3DS into a WiFi camera for VJing and live visuals: the image
+is streamed to a Windows PC, which publishes it as a **Spout** source usable in
+any compatible software (Resolume, TouchDesigner, OBS, MadMapper…). The console's
+touch screen acts as a remote: camera switching, quality, and effects relayed
+over **OSC**. FR/EN interface.
 
 ---
 
 ## How it works
 
 ```
-3DS (camera + touch screen)  ──WiFi/UDP──▶  PC (bridge)  ──Spout──▶  Resolume Arena
-                                                         ──OSC───▶  Resolume effects
+3DS (camera + touch screen)  ──WiFi/UDP──▶  PC (bridge)  ──Spout──▶  your visual software
+                                                         ──OSC───▶  effect control
 ```
 
 No cables, no files to edit: the only configuration is the PC's IP address,
@@ -28,8 +29,9 @@ entered once on the 3DS touch screen.
 Step-by-step illustrated guide (French): [`install/guide/GUIDE-DEBUTANT.pdf`](install/guide/GUIDE-DEBUTANT.pdf)
 
 Requirements: a Windows 10/11 PC with [Python 3.10+](https://www.python.org/downloads/)
-and Resolume Arena, a 3DS with [Luma3DS + Homebrew Launcher](https://3ds.hacks.guide),
-both on the same WiFi network. Everything else (packages, Spout) installs automatically.
+and any Spout-compatible software, a 3DS with
+[Luma3DS + Homebrew Launcher](https://3ds.hacks.guide), both on the same WiFi network.
+Everything else (packages, Spout) installs automatically.
 
 | # | Where | Step |
 |---|-------|------|
@@ -37,7 +39,7 @@ both on the same WiFi network. Everything else (packages, Spout) installs automa
 | 2 | 3DS | Copy `3ds-cam-stream.3dsx` into the SD card's `3ds` folder (once) |
 | 3 | PC | Run `install\run-bridge.cmd` — the IP to use is displayed |
 | 4 | 3DS | Open **3DS2SPOUT** → **PC IP** button → enter the IP → **OK** |
-| 5 | | In Resolume: Spout source **3DS2SPOUT**. On the 3DS: **REC** |
+| 5 | | In your visual software: Spout source **3DS2SPOUT**. On the 3DS: **REC** |
 
 Details, options and troubleshooting: [`install/README.md`](install/README.md) (French)
 
@@ -61,7 +63,7 @@ Details, options and troubleshooting: [`install/README.md`](install/README.md) (
 |--------|---------|
 | [`3ds-cam-stream/`](3ds-cam-stream/) | 3DS app — capture, touch UI, QOI/UDP stream |
 | [`pc-bridge/`](pc-bridge/) | PC bridge: UDP → Spout + OSC relay (Python, or Rust) |
-| [`resolume/`](resolume/) | Resolume configuration + OSC mapping |
+| [`resolume/`](resolume/) | Resolume integration example + OSC mapping |
 | [`install/`](install/) | Install scripts and PDF guide |
 | [`docs/`](docs/) | [Architecture & protocol](docs/ARCHITECTURE.md), [HOME menu icon](docs/FORWARDER-FBI.md) |
 

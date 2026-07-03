@@ -94,7 +94,7 @@ class GuidePDF(FPDF):
         self.set_text_color(*C_ACCENT2)
         self._set_font("", 14)
         self.set_xy(20, 72)
-        self.cell(0, 8, "La caméra de ta 3DS dans Resolume, sans fil")
+        self.cell(0, 8, "Ta 3DS en caméra sans fil — source Spout")
         self.set_text_color(*C_MUTED)
         self._set_font("", 11)
         self.set_xy(20, 100)
@@ -191,7 +191,7 @@ def build() -> None:
     pdf.table_header([("Élément", 75), ("Détail", 95)])
     rows = [
         ("PC Windows 10 ou 11", "Connecté au même WiFi que la 3DS"),
-        ("Resolume Arena", "Déjà installé sur le PC"),
+        ("Un logiciel compatible Spout", "Resolume, TouchDesigner, OBS…"),
         ("Python 3.10+", "python.org — coche « Add to PATH »"),
         ("Nintendo 3DS modée", "Luma3DS + Homebrew Launcher"),
         ("La carte SD de la 3DS", "Pour y copier l'application (1 fois)"),
@@ -238,11 +238,11 @@ def build() -> None:
         "Astuce : le bouton en haut à droite de cet écran passe l'interface en anglais."
     )
 
-    # Etape 4 - Resolume + stream
-    pdf.section_title("4", "Resolume — premier stream")
-    pdf.bullet("Resolume : Sources -> Spout -> 3DS2SPOUT (glisse-le sur un layer)")
+    # Etape 4 - premier stream
+    pdf.section_title("4", "Premier stream")
+    pdf.bullet("Dans ton logiciel visuel : ajoute la source Spout « 3DS2SPOUT »")
     pdf.bullet("3DS : appuie sur REC")
-    pdf.bullet("L'écran affiche « PC OK » + les FPS : l'image arrive dans Resolume")
+    pdf.bullet("L'écran affiche « PC OK » + les FPS : l'image arrive en direct")
     pdf.ln(4)
     pdf.set_fill_color(*C_ACCENT)
     pdf.rect(20, pdf.get_y(), 170, 14, "F")
@@ -264,7 +264,7 @@ def build() -> None:
     pdf.section_title("6", "Ça ne marche pas ?")
     pdf.table_header([("Problème", 65), ("Solution", 105)])
     fixes = [
-        ("Pas d'image dans Resolume", "REC activé ? IP PC bien saisie ? Même WiFi ?"),
+        ("Pas d'image dans le logiciel", "REC activé ? IP PC bien saisie ? Même WiFi ?"),
         ("La 3DS affiche ATTENTE PC", "Relance run-bridge.cmd et autorise le pare-feu"),
         ("Erreur Spout au démarrage", "Installe Visual C++ Redistributable x64"),
         ("SpoutLibrary.dll manquante", "Relance install\\INSTALL.cmd"),

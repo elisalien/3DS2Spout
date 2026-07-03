@@ -36,6 +36,7 @@ NO_SMDH		:=
 # Release / CIA
 VERSION		?=	1.0.0
 RELEASE_PC_IP	?=	192.168.0.1
+REPO_ROOT	:=	$(abspath $(TOPDIR)/..)
 RELEASE_DIR	:=	$(TOPDIR)/release/3DS2SPOUT-$(VERSION)
 RELEASE_ZIP	:=	$(TOPDIR)/release/3DS2SPOUT-$(VERSION).zip
 
@@ -148,6 +149,12 @@ release: icon smdh
 	@cp $(TARGET).3dsx $(RELEASE_DIR)/
 	@cp $(TOPDIR)/example.cfg $(RELEASE_DIR)/3ds-cam-stream.cfg.example
 	@cp $(TOPDIR)/release/README.txt $(RELEASE_DIR)/README.txt
+	@cp $(REPO_ROOT)/README.md $(REPO_ROOT)/README.en.md $(REPO_ROOT)/LICENSE $(REPO_ROOT)/run-bridge.cmd $(RELEASE_DIR)/
+	@cp -r $(REPO_ROOT)/install $(REPO_ROOT)/docs $(REPO_ROOT)/resolume $(RELEASE_DIR)/
+	@mkdir -p $(RELEASE_DIR)/pc-bridge
+	@cp -r $(REPO_ROOT)/pc-bridge/src $(REPO_ROOT)/pc-bridge/vendor $(RELEASE_DIR)/pc-bridge/
+	@cp $(REPO_ROOT)/pc-bridge/receiver.py $(REPO_ROOT)/pc-bridge/requirements.txt $(REPO_ROOT)/pc-bridge/config.toml $(REPO_ROOT)/pc-bridge/Cargo.toml $(REPO_ROOT)/pc-bridge/README.md $(RELEASE_DIR)/pc-bridge/ 2>/dev/null || true
+	@rm -f $(RELEASE_DIR)/pc-bridge/vendor/*.dll
 	@rm -f $(RELEASE_ZIP)
 	@(cd $(TOPDIR)/release && zip -r $(notdir $(RELEASE_ZIP)) $(notdir $(RELEASE_DIR)))
 	@echo ""

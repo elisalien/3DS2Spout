@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="3DS2SPOUT — Stream your Nintendo 3DS camera to Resolume Arena via Spout.">
+  <meta name="description" content="3DS2SPOUT — Turn your Nintendo 3DS camera into a live wireless Spout source.">
   <meta name="github-repo" content="">
   <title>3DS2SPOUT</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%231a2830' width='32' height='32' rx='6'/><text x='16' y='22' text-anchor='middle' font-size='14' font-family='system-ui' font-weight='700' fill='%236aacb6'>3S</text></svg>">
@@ -485,21 +485,23 @@
     </nav>
 
     <header class="hero">
-      <div class="badge" data-lang="fr">Homebrew 3DS &rarr; Resolume</div>
-      <div class="badge" data-lang="en">3DS Homebrew &rarr; Resolume</div>
+      <div class="badge" data-lang="fr">Homebrew 3DS &rarr; Spout</div>
+      <div class="badge" data-lang="en">3DS Homebrew &rarr; Spout</div>
 
       <h1>
-        <span data-lang="fr">Caméra 3DS en <em>direct</em> dans Resolume</span>
-        <span data-lang="en">Live <em>3DS camera</em> into Resolume</span>
+        <span data-lang="fr">Ta caméra 3DS en <em>source Spout</em>, sans fil</span>
+        <span data-lang="en">Your 3DS camera as a wireless <em>Spout source</em></span>
       </h1>
 
       <p data-lang="fr">
-        Streame la caméra Nintendo 3DS via WiFi vers un bridge PC Windows,
-        sortie Spout dans Resolume Arena, effets tactiles et relais OSC.
+        Ta 3DS devient une caméra sans fil pour tes visuels : l'image arrive
+        en direct dans n'importe quel logiciel compatible Spout,
+        et l'écran tactile sert de télécommande.
       </p>
       <p data-lang="en">
-        Stream your Nintendo 3DS camera over WiFi to a Windows PC bridge,
-        Spout output into Resolume Arena, touch effects and OSC relay.
+        Your 3DS becomes a wireless camera for your visuals: the image streams
+        live into any Spout-compatible software, with the touch screen
+        as a remote control.
       </p>
 
       <div class="hero-actions">
@@ -525,7 +527,7 @@
       <span class="flow-arrow">&rarr;</span>
       <div class="flow-item"><strong>Spout</strong></div>
       <span class="flow-arrow">&rarr;</span>
-      <div class="flow-item"><strong>Resolume</strong></div>
+      <div class="flow-item"><strong>ton logiciel</strong></div>
     </div>
     <div class="flow flex" data-lang="en">
       <div class="flow-item"><strong>3DS</strong> camera</div>
@@ -536,106 +538,79 @@
       <span class="flow-arrow">&rarr;</span>
       <div class="flow-item"><strong>Spout</strong></div>
       <span class="flow-arrow">&rarr;</span>
-      <div class="flow-item"><strong>Resolume</strong></div>
+      <div class="flow-item"><strong>your app</strong></div>
     </div>
 
     <section id="quickstart">
       <div class="section-label" data-lang="fr">Guide rapide</div>
       <div class="section-label" data-lang="en">Quick start</div>
 
-      <h2 data-lang="fr">Installation en 7 étapes</h2>
-      <h2 data-lang="en">Setup in 7 steps</h2>
+      <h2 data-lang="fr">Installation en 5 étapes</h2>
+      <h2 data-lang="en">Setup in 5 steps</h2>
 
       <p data-lang="fr" style="color:var(--muted);margin:-12px 0 20px;font-size:0.92rem;">
-        Une seule IP à configurer : celle du PC (bouton <strong>IP PC</strong> sur la 3DS).
+        Aucun fichier à éditer. Une seule chose à configurer : l'IP du PC, directement sur la 3DS.
       </p>
       <p data-lang="en" style="color:var(--muted);margin:-12px 0 20px;font-size:0.92rem;">
-        Only one IP to set: the PC IP (via <strong>IP PC</strong> button on the 3DS).
+        No files to edit. Only one thing to set up: the PC's IP, right on the 3DS.
       </p>
 
       <div class="steps">
         <article class="step">
           <div class="step-num">1</div>
           <div>
-            <h3 data-lang="fr">Prérequis PC</h3>
-            <h3 data-lang="en">PC prerequisites</h3>
-            <p data-lang="fr">Python 3.10+, SpoutLibrary.dll (x64), Resolume, même WiFi que la 3DS.</p>
-            <p data-lang="en">Python 3.10+, SpoutLibrary.dll (x64), Resolume, same WiFi as the 3DS.</p>
-            <span class="code-block">install\check-prerequisites.cmd</span>
+            <h3 data-lang="fr">Installer sur le PC — tout est automatique</h3>
+            <h3 data-lang="en">Install on the PC — fully automatic</h3>
+            <p data-lang="fr">Télécharge la release, dézippe, double-clique. Packages Python et Spout s'installent tout seuls.</p>
+            <p data-lang="en">Download the release, unzip, double-click. Python packages and Spout install themselves.</p>
+            <span class="code-block">install\INSTALL.cmd</span>
           </div>
         </article>
 
         <article class="step">
           <div class="step-num">2</div>
           <div>
-            <h3 data-lang="fr">Installer le bridge PC</h3>
-            <h3 data-lang="en">Install PC bridge</h3>
-            <p data-lang="fr">Dépendances Python + copie SpoutLibrary.dll dans <code>pc-bridge/vendor/</code>.</p>
-            <p data-lang="en">Python dependencies + copy SpoutLibrary.dll to <code>pc-bridge/vendor/</code>.</p>
-            <span class="code-block">install\INSTALL.cmd</span>
+            <h3 data-lang="fr">Copier l'app sur la carte SD (une fois)</h3>
+            <h3 data-lang="en">Copy the app to the SD card (once)</h3>
+            <p data-lang="fr">Copie <code>3ds-cam-stream.3dsx</code> dans le dossier <code>3ds</code> de la carte SD, remets-la dans la console.</p>
+            <p data-lang="en">Copy <code>3ds-cam-stream.3dsx</code> into the SD card's <code>3ds</code> folder, put it back in the console.</p>
           </div>
         </article>
 
         <article class="step">
           <div class="step-num">3</div>
           <div>
-            <h3 data-lang="fr">Installer le .3dsx (une fois)</h3>
-            <h3 data-lang="en">Install .3dsx (once)</h3>
-            <p data-lang="fr">
-              Release : copie <code>3ds-cam-stream.3dsx</code> &rarr; <code>SD:/3ds/</code><br>
-              Dev : <code>make</code> puis depuis <code>apps/</code> : <code>./scripts/install-to-3ds.sh IP_3DS</code>
-            </p>
-            <p data-lang="en">
-              Release: copy <code>3ds-cam-stream.3dsx</code> &rarr; <code>SD:/3ds/</code><br>
-              Dev: <code>make</code> then from <code>apps/</code>: <code>./scripts/install-to-3ds.sh 3DS_IP</code>
-            </p>
+            <h3 data-lang="fr">Lancer le bridge sur le PC</h3>
+            <h3 data-lang="en">Start the bridge on the PC</h3>
+            <p data-lang="fr">La fenêtre affiche <strong>IP PC pour la 3DS : 192.168.x.x</strong> — note ce numéro. Autorise le pare-feu si demandé.</p>
+            <p data-lang="en">The window shows <strong>IP PC pour la 3DS: 192.168.x.x</strong> — note that number. Allow the firewall prompt if asked.</p>
+            <span class="code-block">install\run-bridge.cmd</span>
           </div>
         </article>
 
         <article class="step">
           <div class="step-num">4</div>
           <div>
-            <h3 data-lang="fr">Lancer le bridge + noter l'IP</h3>
-            <h3 data-lang="en">Start bridge + note IP</h3>
-            <p data-lang="fr">La console affiche <strong>IP PC pour la 3DS : 192.168.x.x</strong></p>
-            <p data-lang="en">Console shows <strong>IP PC pour la 3DS : 192.168.x.x</strong></p>
-            <span class="code-block">install\run-bridge.cmd</span>
+            <h3 data-lang="fr">Entrer l'IP sur la 3DS</h3>
+            <h3 data-lang="en">Enter the IP on the 3DS</h3>
+            <p data-lang="fr">
+              Homebrew Launcher &rarr; <strong>3DS2SPOUT</strong> &rarr; bouton <strong>IP PC</strong> &rarr; tape le numéro &rarr; <strong>OK</strong><br>
+              (enregistré sur la console — à refaire seulement si l'IP du PC change)
+            </p>
+            <p data-lang="en">
+              Homebrew Launcher &rarr; <strong>3DS2SPOUT</strong> &rarr; <strong>PC IP</strong> button &rarr; type the number &rarr; <strong>OK</strong><br>
+              (saved on the console — only needed again if the PC's IP changes)
+            </p>
           </div>
         </article>
 
         <article class="step">
           <div class="step-num">5</div>
           <div>
-            <h3 data-lang="fr">Configurer l'IP sur la 3DS</h3>
-            <h3 data-lang="en">Set IP on the 3DS</h3>
-            <p data-lang="fr">
-              3DS2SPOUT &rarr; bouton <strong>IP PC</strong> &rarr; clavier tactile &rarr; <strong>OK</strong><br>
-              (sauvegarde auto sur la SD — pas d'édition PC)
-            </p>
-            <p data-lang="en">
-              3DS2SPOUT &rarr; <strong>IP PC</strong> button &rarr; touch keypad &rarr; <strong>OK</strong><br>
-              (auto-saved to SD — no PC file editing)
-            </p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="step-num">6</div>
-          <div>
-            <h3 data-lang="fr">Resolume Arena</h3>
-            <h3 data-lang="en">Resolume Arena</h3>
-            <p data-lang="fr">Sources &rarr; Spout &rarr; <strong>3DS2SPOUT</strong> sur Layer 1.</p>
-            <p data-lang="en">Sources &rarr; Spout &rarr; <strong>3DS2SPOUT</strong> on Layer 1.</p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="step-num">7</div>
-          <div>
-            <h3 data-lang="fr">Stream !</h3>
-            <h3 data-lang="en">Stream!</h3>
-            <p data-lang="fr">Appuie sur <strong>REC</strong> — vérifie <strong>PC OK</strong> + FPS en bas d'écran.</p>
-            <p data-lang="en">Press <strong>REC</strong> — check <strong>PC OK</strong> + FPS at the bottom.</p>
+            <h3 data-lang="fr">Source Spout + REC</h3>
+            <h3 data-lang="en">Spout source + REC</h3>
+            <p data-lang="fr">Dans ton logiciel : ajoute la source Spout <strong>3DS2SPOUT</strong>. Sur la 3DS : <strong>REC</strong> — l'écran affiche <strong>PC OK</strong> + FPS.</p>
+            <p data-lang="en">In your software: add the <strong>3DS2SPOUT</strong> Spout source. On the 3DS: <strong>REC</strong> — the screen shows <strong>PC OK</strong> + FPS.</p>
           </div>
         </article>
       </div>
@@ -676,66 +651,42 @@
       <h2 data-lang="fr">Prérequis</h2>
       <h2 data-lang="en">Prerequisites</h2>
 
+      <p data-lang="fr" style="color:var(--muted);margin:-12px 0 20px;font-size:0.92rem;">
+        4 choses, c'est tout. Le reste (packages, Spout) s'installe automatiquement.
+      </p>
+      <p data-lang="en" style="color:var(--muted);margin:-12px 0 20px;font-size:0.92rem;">
+        4 things, that's it. Everything else (packages, Spout) installs automatically.
+      </p>
+
       <div class="grid-2">
         <div class="card">
           <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
           <span class="card-tag tag-required" data-lang="en">Required</span>
-          <h3>Windows PC</h3>
-          <p data-lang="fr">Windows 10/11, même réseau WiFi que la 3DS.</p>
-          <p data-lang="en">Windows 10/11, same WiFi network as the 3DS.</p>
+          <h3>PC Windows 10/11</h3>
+          <p data-lang="fr">Sur le même réseau WiFi que la 3DS.</p>
+          <p data-lang="en">On the same WiFi network as the 3DS.</p>
         </div>
         <div class="card">
           <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
           <span class="card-tag tag-required" data-lang="en">Required</span>
           <h3>Python 3.10+</h3>
-          <p><a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org</a></p>
+          <p data-lang="fr"><a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org</a> — cocher « Add to PATH »</p>
+          <p data-lang="en"><a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org</a> — check "Add to PATH"</p>
         </div>
         <div class="card">
           <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
           <span class="card-tag tag-required" data-lang="en">Required</span>
-          <h3>SpoutLibrary.dll</h3>
-          <p data-lang="fr">DLL x64 dans pc-bridge/vendor/</p>
-          <p data-lang="en">x64 DLL in pc-bridge/vendor/</p>
-        </div>
-        <div class="card">
-          <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
-          <span class="card-tag tag-required" data-lang="en">Required</span>
-          <h3>Resolume Arena</h3>
-          <p data-lang="fr">Entrée source Spout.</p>
-          <p data-lang="en">Spout source input.</p>
+          <h3 data-lang="fr">Un logiciel compatible Spout</h3>
+          <h3 data-lang="en">Any Spout-compatible software</h3>
+          <p data-lang="fr">Resolume, TouchDesigner, OBS (plugin), MadMapper…</p>
+          <p data-lang="en">Resolume, TouchDesigner, OBS (plugin), MadMapper…</p>
         </div>
         <div class="card">
           <span class="card-tag tag-3ds">3DS</span>
-          <h3>Nintendo 3DS</h3>
-          <p data-lang="fr">Luma3DS + Homebrew Launcher + FTPD.</p>
-          <p data-lang="en">Luma3DS + Homebrew Launcher + FTPD.</p>
-        </div>
-        <div class="card">
-          <span class="card-tag tag-required" data-lang="fr">Obligatoire</span>
-          <span class="card-tag tag-required" data-lang="en">Required</span>
-          <h3>Pare-feu UDP 5000</h3>
-          <p data-lang="fr">Autoriser à la première exécution du bridge.</p>
-          <p data-lang="en">Allow on first bridge run.</p>
-        </div>
-        <div class="card">
-          <span class="card-tag tag-3ds">3DS</span>
-          <h3>Config IP tactile</h3>
-          <p data-lang="fr">Bouton <strong>IP PC</strong> — pas de .cfg manuel sur PC.</p>
-          <p data-lang="en"><strong>IP PC</strong> button — no manual .cfg on PC.</p>
-        </div>
-        <div class="card">
-          <span class="card-tag tag-optional" data-lang="fr">Optionnel</span>
-          <span class="card-tag tag-optional" data-lang="en">Optional</span>
-          <h3>Rust / cargo</h3>
-          <p data-lang="fr">Bridge PC plus rapide ; Python suffit.</p>
-          <p data-lang="en">Faster PC bridge; Python is enough.</p>
-        </div>
-        <div class="card">
-          <span class="card-tag tag-optional" data-lang="fr">Dev</span>
-          <span class="card-tag tag-optional" data-lang="en">Dev</span>
-          <h3>devkitPro + MSYS2</h3>
-          <p data-lang="fr">Compiler le .3dsx — <code>smdhtool</code>, pas bannertool.</p>
-          <p data-lang="en">Build .3dsx — <code>smdhtool</code>, not bannertool.</p>
+          <h3 data-lang="fr">Nintendo 3DS modée</h3>
+          <h3 data-lang="en">Modded Nintendo 3DS</h3>
+          <p data-lang="fr">Luma3DS + Homebrew Launcher — pas encore fait ? <a href="https://3ds.hacks.guide" target="_blank" rel="noopener">3ds.hacks.guide</a></p>
+          <p data-lang="en">Luma3DS + Homebrew Launcher — not done yet? <a href="https://3ds.hacks.guide" target="_blank" rel="noopener">3ds.hacks.guide</a></p>
         </div>
       </div>
     </section>
