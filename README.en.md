@@ -1,41 +1,44 @@
 # 3DS2SPOUT
 
+> The Nintendo 3DS camera as a Spout source — wirelessly, for VJing and live visuals.
+
 [Français](README.md) · **English**
 
-**The Nintendo 3DS camera as a Spout source — wirelessly.**
+![Platform](https://img.shields.io/badge/platform-Nintendo%203DS%20%7C%20Windows-informational) ![Stack](https://img.shields.io/badge/stack-C%20%C2%B7%20Python%20%C2%B7%20Rust-blue) ![Output](https://img.shields.io/badge/output-Spout%20%2B%20OSC-orange) ![License](https://img.shields.io/badge/license-MIT-green)
 
-3DS2SPOUT turns a 3DS into a WiFi camera for VJing and live visuals: the image
-is streamed to a Windows PC, which publishes it as a **Spout** source usable in
-any compatible software (Resolume, TouchDesigner, OBS, MadMapper…). The console's
-touch screen acts as a remote: camera switching, quality, and effects relayed
-over **OSC**. FR/EN interface.
+**[Download the latest release](https://github.com/elisalien/3ds2spout/releases/latest)** · **[Beginner guide (PDF, French)](install/guide/GUIDE-DEBUTANT.pdf)**
 
----
+<p align="center"><img src="3ds-cam-stream/gfx/icon.png" width="96" alt="3DS2SPOUT icon"></p>
 
-## How it works
+## About
+
+3DS2SPOUT turns a 3DS into a WiFi camera for VJing and live visuals: the image is streamed to a Windows PC, which publishes it as a **Spout** source usable in any compatible software (Resolume, TouchDesigner, OBS, MadMapper…). The console's touch screen acts as a remote: camera switching, quality, and effects relayed over **OSC**. FR/EN interface.
 
 ```
 3DS (camera + touch screen)  ──WiFi/UDP──▶  PC (bridge)  ──Spout──▶  your visual software
                                                          ──OSC───▶  effect control
 ```
 
-No cables, no files to edit: the only configuration is the PC's IP address,
-entered once on the 3DS touch screen.
+No cables, no files to edit: the only configuration is the PC's IP address, entered once on the 3DS touch screen.
 
----
+## Features
 
-## Installation
+- 3DS camera stream (rear or front) over WiFi/UDP, frames encoded as QOI
+- Published on the PC as a Spout source named **3DS2SPOUT**
+- Touch screen as a remote: REC, camera switch, quality (SMOOTH 200P / HD 400P), effects relayed over OSC
+- PC bridge in Python, or in Rust (faster) when available — picked automatically
+- Automated Windows install (packages, Spout) and an illustrated PDF guide
+- FR/EN interface
+
+## Getting started
 
 Step-by-step illustrated guide (French): [`install/guide/GUIDE-DEBUTANT.pdf`](install/guide/GUIDE-DEBUTANT.pdf)
 
-Requirements: a Windows 10/11 PC with [Python 3.10+](https://www.python.org/downloads/)
-and any Spout-compatible software, a 3DS with
-[Luma3DS + Homebrew Launcher](https://3ds.hacks.guide), both on the same WiFi network.
-Everything else (packages, Spout) installs automatically.
+Requirements: a Windows 10/11 PC with [Python 3.10+](https://www.python.org/downloads/) and any Spout-compatible software, a 3DS with [Luma3DS + Homebrew Launcher](https://3ds.hacks.guide), both on the same WiFi network. Everything else (packages, Spout) installs automatically. The firewall must allow incoming UDP on port **5000**.
 
 | # | Where | Step |
 |---|-------|------|
-| 1 | PC | Download the [release](../../releases) and run `install\INSTALL.cmd` |
+| 1 | PC | Download the [release](https://github.com/elisalien/3ds2spout/releases) and run `install\INSTALL.cmd` |
 | 2 | 3DS | Copy `3ds-cam-stream.3dsx` into the SD card's `3ds` folder (once) |
 | 3 | PC | Run `install\run-bridge.cmd` — the IP to use is displayed |
 | 4 | 3DS | Open **3DS2SPOUT** → **PC IP** button → enter the IP → **OK** |
@@ -43,9 +46,9 @@ Everything else (packages, Spout) installs automatically.
 
 Details, options and troubleshooting: [`install/README.md`](install/README.md) (French)
 
----
+## Usage
 
-## Controls (touch screen)
+### Controls (touch screen)
 
 | Control | Action |
 |---------|--------|
@@ -55,9 +58,17 @@ Details, options and troubleshooting: [`install/README.md`](install/README.md) (
 | **PC IP** | PC IP address + FR/EN language |
 | **START** | Quit |
 
----
+The IP can also be provided through an `SD:/3ds-cam-stream.cfg` file (see [`3ds-cam-stream/example.cfg`](3ds-cam-stream/example.cfg): `pc_ip`, `pc_port`, `lang`).
 
-## Repository layout
+### Resolume
+
+Resolume Arena setup (Spout + OSC): [`resolume/SETUP.md`](resolume/SETUP.md) (French), OSC mapping in [`resolume/osc-map.toml`](resolume/osc-map.toml). The bridge's OSC target is set in [`pc-bridge/config.toml`](pc-bridge/config.toml).
+
+### For developers
+
+Build the `.3dsx` with devkitPro (`pacman -S 3ds-dev`, then `make` in `3ds-cam-stream/`), deploy over WiFi via FTPD (`scripts/install-to-3ds.ps1` or `.sh`), package a release with `scripts/make-release.cmd`. The UDP protocol (handshake, QOI frames, OSC control — port 5000) is described in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), deployment in [`scripts/README.md`](scripts/README.md), the bridge in [`pc-bridge/README.md`](pc-bridge/README.md).
+
+## Project structure
 
 | Folder | Purpose |
 |--------|---------|
@@ -65,21 +76,22 @@ Details, options and troubleshooting: [`install/README.md`](install/README.md) (
 | [`pc-bridge/`](pc-bridge/) | PC bridge: UDP → Spout + OSC relay (Python, or Rust) |
 | [`resolume/`](resolume/) | Resolume integration example + OSC mapping |
 | [`install/`](install/) | Install scripts and PDF guide |
+| [`scripts/`](scripts/) | 3DS deployment, Rust/bridge install, release packaging |
 | [`docs/`](docs/) | [Architecture & protocol](docs/ARCHITECTURE.md), [HOME menu icon](docs/FORWARDER-FBI.md) |
 
+## Tech stack
+
+C (devkitPro / libctru) · QOI · UDP · Python (`qoi`, `python-osc`) · Rust · Spout2 (`SpoutLibrary.dll`) · OSC · PowerShell / batch
+
+## Credits & license
+
+QOI encoder based on [phoboslab/qoi](https://github.com/phoboslab/qoi) (MIT). Spout output via [Spout2](https://github.com/leadedge/Spout2).
+
+[MIT](LICENSE) license.
+
 ---
 
-## For developers
-
-Build the `.3dsx` with devkitPro (`pacman -S 3ds-dev`, then `make` in
-`3ds-cam-stream/`), deploy over WiFi via FTPD (`scripts/install-to-3ds.ps1` or `.sh`),
-package a release with `scripts/make-release.cmd`. The UDP protocol (handshake, QOI
-frames, OSC control — port 5000) is described in
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), deployment in
-[`scripts/README.md`](scripts/README.md).
-
----
-
-## License
-
-MIT — QOI encoder based on [phoboslab/qoi](https://github.com/phoboslab/qoi) (MIT).
+<p align="center">
+  Made by <a href="https://github.com/elisalien">Élisalien</a> ·
+  <a href="https://gitlab.com/elisalien/catalog">Shaders, sources & software catalog</a>
+</p>
